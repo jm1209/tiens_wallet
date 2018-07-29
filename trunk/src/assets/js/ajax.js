@@ -1,7 +1,8 @@
 import axios from 'axios';
 import md5 from 'js-md5';
 
-export const interfaceUrl = "http://172.16.0.241:8081/tiens-console/";
+// export const interfaceUrl = "http://172.16.0.241:8081/tiens-console/";
+export const interfaceUrl = "http://221.239.72.121:8080/tiens-console/";
 
 export default function ajax(url, data, callback) {
   url = interfaceUrl + url;
