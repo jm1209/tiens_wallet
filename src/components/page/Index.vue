@@ -41,7 +41,8 @@
         <p>小狮子正在奋力加载中</p>
       </div>
     </div>
-    <scroll class="content" ref="scroll" :listenScroll="listenScroll" :pulldown="pulldown" @pullLoad="loading" @scrollRang="scroll">
+    <scroll class="content" ref="scroll" :listenScroll="listenScroll" :pulldown="pulldown" @pullLoad="loading"
+            @scrollRang="scroll">
       <div>
         <!--banner轮播-->
         <div class="banner-swiper" v-if="advertisements.length">
