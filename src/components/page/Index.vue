@@ -41,11 +41,10 @@
         <p>小狮子正在奋力加载中</p>
       </div>
     </div>
-    <scroll class="content" ref="scroll" :listenScroll="listenScroll" :pulldown="pulldown" @pullLoad="loading"
-            @scrollRang="scroll">
+    <scroll class="content" ref="scroll" :listenScroll="listenScroll" :pulldown="pulldown" @pullLoad="loading" @scrollRang="scroll">
       <div>
         <!--banner轮播-->
-        <div class="banner-swiper">
+        <div class="banner-swiper" v-if="advertisements.length">
           <div class="swiper-wrapper">
             <div class="swiper-slide" v-for="ad in advertisements" :data-swiper-autoplay="ad.advTime*1000">
               <img :src="ad.advImage">
@@ -62,6 +61,10 @@
               <div class="txt">{{busin.busName}}</div>
             </div>
           </div>
+        </div>
+
+        <div class="business-flex">
+
         </div>
         <!--广告位-->
         <div class="adsense">
@@ -111,7 +114,7 @@
         advertisements: [],
         businesses: [],
         products: [],
-        advertisement:{}
+        advertisement: {}
       }
     },
     components: {scroll, tabBar},
