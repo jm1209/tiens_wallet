@@ -1,48 +1,74 @@
 <template>
   <div class="index">
-    <!--头部搜索栏和消息标识-->
-    <div class="top">
-      <div class="search-wrapper">
-        <div class="search">
+    <div v-if="!topShow" ref="top">
+      <!--头部搜索栏和消息标识-->
+      <div class="top">
+        <div class="search-wrapper">
+          <div class="search">
               <span class="text">
               <i class="icon"></i>
               大家正在搜：附近经济型酒店
             </span>
+          </div>
+        </div>
+        <div class="info-wrapper">
+          <div class="info">
+            <div class="num">{{msmCount}}</div>
+          </div>
         </div>
       </div>
+      <!--五种操作-->
+      <div class="handle">
+        <div class="item">
+          <div class="scan-icon"></div>
+          <div class="txt">扫一扫</div>
+        </div>
+        <div class="item">
+          <div class="pay-icon"></div>
+          <div class="txt">付款</div>
+        </div>
+        <div class="item">
+          <div class="take-icon"></div>
+          <div class="txt">收款</div>
+        </div>
+        <div class="item">
+          <div class="recharge-icon"></div>
+          <div class="txt">充值</div>
+        </div>
+      </div>
+    </div>
+
+    <!--当向上滚动时头部显示-->
+    <div class="up-top" v-if="topShow">
+      <div class="item">
+        <i class="scan-icon"></i>
+      </div>
+      <div class="item">
+        <i class="pay-icon"></i>
+      </div>
+      <div class="item">
+        <i class="take-icon"></i>
+      </div>
+      <div class="item">
+        <i class="recharge-icon"></i>
+      </div>
+      <div class="seach">搜索</div>
       <div class="info-wrapper">
         <div class="info">
-          <div class="num">99</div>
+          <div class="num">{{msmCount}}</div>
         </div>
       </div>
     </div>
-    <!--五种操作-->
-    <div class="handle">
-      <div class="item">
-        <div class="scan-icon"></div>
-        <div class="txt">扫一扫</div>
-      </div>
-      <div class="item">
-        <div class="pay-icon"></div>
-        <div class="txt">付款</div>
-      </div>
-      <div class="item">
-        <div class="take-icon"></div>
-        <div class="txt">收款</div>
-      </div>
-      <div class="item">
-        <div class="recharge-icon"></div>
-        <div class="txt">充值</div>
-      </div>
-    </div>
-    <div class="loading" v-if="isLoad">
-      <div class="load-wrapper">
-        <img src="../../assets/images/loading.gif" width="50" height="50">
-        <p>小狮子正在奋力加载中</p>
-      </div>
-    </div>
-    <scroll class="content" ref="scroll" :listenScroll="listenScroll" :pulldown="pulldown" @pullLoad="loading"
-            @scrollRang="scroll">
+    <!--<div class="loading">-->
+    <!--<div class="load-wrapper">-->
+    <!--<img src="../../assets/images/loading.gif" width="50" height="50">-->
+    <!--<p>小狮子正在奋力加载中</p>-->
+    <!--</div>-->
+    <!--</div>-->
+    <div class="bg-layer" ref="layer"></div>
+    <scroll class="content" v-if="businesses.length" ref="scroll" :listenScroll="listenScroll" @scrollRang="scroll"
+            :data="activities"
+            :probeType="probeType">
       <div>
         <!--banner轮播-->
         <div class="banner-swiper" v-if="advertisements.length">
@@ -55,7 +81,7 @@
           <div class="swiper-pagination"></div>
         </div>
         <!--业态轮播-->
-        <div class="business-swiper">
+        <div class="business-swiper" v-if="arrayType == 1">
           <div class="swiper-wrapper">
             <div class="swiper-slide" v-for="busin in businesses">
               <div class="icon"><img :src="busin.busLogo" width="44"></div>
@@ -64,8 +90,11 @@
           </div>
         </div>
 
-        <div class="business-flex">
-
+        <div class="business-flex" v-if="arrayType == 2">
+          <div class="item" v-for="busin in businesses">
+            <div class="icon"><img :src="busin.busLogo" width="44"></div>
+            <div class="txt">{{busin.busName}}</div>
+          </div>
         </div>
         <!--广告位-->
         <div class="adsense">
@@ -82,44 +111,56 @@
           </div>
         </div>
         <!--猜你喜欢-->
-        <div class="like" v-if="products.length>0">
+        <div class="like" v-if="productArr.length>0">
           <div class="title">猜你喜欢 <i class="icon"></i></div>
           <div class="like-wrapper">
-            <div class="item" v-for="prod in products">
-              <img :src="prod.goodsImage">
-              <h2 class="name">{{prod.goodsTitle}}</h2>
-              <p class="price">￥{{prod.goodsPrice}}</p>
+            <div class="item" v-for="pro in productArr">
+              <img :src="pro.goodsImage">
+              <h2 class="name">{{pro.goodsTitle}}</h2>
+              <p class="price">￥{{pro.goodsPrice}}</p>
             </div>
           </div>
         </div>
         <div class="no-more">没有内容了</div>
       </div>
     </scroll>
-    <tab-bar></tab-bar>
+    <tab-bar tabIndex="0"></tab-bar>
+    <div class="loading-wrapper" v-if="!businesses.length">
+      <v-loading></v-loading>
+    </div>
   </div>
 </template>
 
 <script>
   import scroll from 'base/scroll';
   import tabBar from 'base/tabBar';
+  import vLoading from 'common/vLoading';
   import Swiper from 'swiper';
   import ajax from 'js/ajax';
+
+  const TOPHEIGHT = 55;
 
   export default {
     name: "Index",
     data() {
       return {
+        topShow: false,
         scrollY: 0,
-        isLoad: false,
+        mesCount: 0,
+        arrayType: -1,
         activities: [],
         advertisements: [],
         businesses: [],
-        products: [],
-        advertisement: {}
+        advertisement: {},
+        productArr: []
       }
     },
-    components: {scroll, tabBar},
-    computed: {},
+    components: {scroll, tabBar, vLoading},
+    computed: {
+      msmCount() {
+        return this.mesCount >= 100 ? '..' : this.mesCount
+      }
+    },
     methods: {
       scroll(pos) {
         this.scrollY = pos.y;
@@ -145,19 +186,32 @@
           this.advertisements = d.data.advertisements;
           this.businesses = d.data.businesses;
           this.activities = d.data.activities;
-          this.products = d.data.products;
           this.advertisement = d.data.advertisement;
+          this.mesCount = d.data.mesCount;
+          this.arrayType = d.data.arrayType;
 
           this.$nextTick(() => {
             this._swiperInit();
           });
+        });
+        ajax('get/index/getProductList', {memId: '', page: 0, pageSize: 10}, (d) => {
+          this.productArr = d.data || [];
         })
       }
     },
     watch: {
       scrollY(newY) {
-        if (newY > 30) {
-          this.isLoad = true;
+        let translateY = Math.max(this.minTranslateY, newY);
+        this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`;
+
+        if (newY > 0) {
+          this.$refs.layer.style['transform'] = '';
+        }
+
+        if (newY < this.minTranslateY) {
+          this.topShow = true;
+        } else {
+          this.topShow = false;
         }
       }
     },
@@ -166,11 +220,11 @@
       this.businessSwiper = null;
       this.probeType = 3;
       this.listenScroll = true;
-      this.pulldown = true;
       this._indexInit();
     },
     mounted() {
-      this._swiperInit();
+      this.topHeight = this.$refs.top.clientHeight;
+      this.minTranslateY = -this.topHeight + TOPHEIGHT;
     }
 
   }
@@ -285,11 +339,98 @@
         }
       }
     }
+    .up-top {
+      position: fixed;
+      top: 0;
+      height: 48px;
+      width: 100%;
+      background-color: @theme-color;
+      align-items: center;
+      font-size: 0;
+      display: flex;
+      z-index: 999;
+
+      .item {
+        flex: 1;
+        text-align: center;
+
+        .scan-icon {
+          .bg-img(main_sys1);
+          background-size: 29px 29px;
+          width: 29px;
+          height: 29px;
+          display: inline-block;
+          line-height: 48px;
+        }
+        .pay-icon {
+          width: 29px;
+          height: 29px;
+          background-size: 29px 29px;
+          .bg-img(main_fk1);
+          display: inline-block;
+        }
+        .take-icon {
+          width: 29px;
+          height: 29px;
+          background-size: 29px 29px;
+          .bg-img(main_sk1);
+          display: inline-block;
+        }
+        .recharge-icon {
+          width: 29px;
+          height: 29px;
+          background-size: 29px 29px;
+          .bg-img(main_cz1);
+          display: inline-block;
+        }
+      }
+      .seach {
+        flex: 0 0 137px;
+        height: 34px;
+        width: 137px;
+        background-color: #fff;
+        border-radius: 3px;
+        text-align: center;
+        color: @color-font-help;
+        font-size: @font-theme-xs;
+        line-height: 34px;
+      }
+      .info-wrapper {
+        flex: 0 0 30px;
+
+        .info {
+          width: 30px;
+          height: 30px;
+          .bg-img(main_not2);
+          background-size: 30px 30px;
+          margin: 10px 10px 0 0;
+          position: relative;
+
+          .num {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            background-color: #FF2C2C;
+            color: #fff;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+          }
+        }
+      }
+    }
     .loading {
       text-align: center;
     }
+    .bg-layer {
+      position: relative;
+      height: 100%;
+      background-color: #fff;
+    }
     .content {
-      overflow: hidden;
       position: fixed;
       top: 130px;
       bottom: 50px;
@@ -326,6 +467,23 @@
         .swiper-slide {
           width: 22%;
           text-align: center;
+
+          .txt {
+            color: @color-font-black;
+            font-size: @font-theme-sm;
+            margin-top: 10px;
+          }
+        }
+      }
+      .business-flex {
+        width: 100%;
+        text-align: center;
+        font-size: 0;
+
+        .item {
+          width: 20%;
+          display: inline-block;
+          margin: 10px 0;
 
           .txt {
             color: @color-font-black;
@@ -442,6 +600,12 @@
         font-size: @font-theme-xs;
         text-align: center;
       }
+    }
+    .loading-wrapper {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 100%;
     }
   }
 </style>

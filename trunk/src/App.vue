@@ -7,8 +7,24 @@
 </template>
 
 <script>
+  import ajax from 'js/ajax';
+  import {mapMutations} from 'vuex';
+
   export default {
-    name: 'App'
+    name: 'App',
+    methods: {
+      _tabInit() {
+        ajax('get/center/getConfig', {}, (d) => {
+          this.setTabs(d.data.tabs);
+        })
+      },
+      ...mapMutations({
+        setTabs: 'SET_TABS'
+      })
+    },
+    created() {
+      this._tabInit();
+    }
   }
 </script>
 

@@ -14,60 +14,49 @@
       click: {type: Boolean, default: true},
       data: {type: Array, default: null},
       listenScroll: {type: Boolean, default: false},
-      pulldown: {type: Boolean, default: false},
     },
     methods: {
-      _initScroll() {
-        if (!this.$refs.scroll) {
+      _initScroll(){
+        if(!this.$refs.scroll){
           return;
         }
-        this.scroll = new Bscroll(this.$refs.scroll, {
-          probeType: this.probeType,
-          click: this.click
+        this.scroll = new Bscroll(this.$refs.scroll,{
+          probeType:this.probeType,
+          click:this.click
         });
-        if (this.listenScroll) {
+        if(this.listenScroll){
           const self = this;
-          this.scroll.on('scroll', (pos) => {
-            self.$emit('scrollRang', pos);
+          this.scroll.on('scroll',(pos) => {
+            self.$emit('scrollRang',pos)
           })
-        }
-        if (this.pulldown) {
-          const self = this;
-          this.scroll.on('touchend', (pos) => {
-            debugger
-            if (pos.y > 30) {
-              self.$emit('pullLoad');
-            }
-          })
-
         }
       },
-      enable() {
+      enable(){
         this.scroll && this.scroll.enable();
       },
-      disable() {
+      disable(){
         this.scroll && this.scroll.disable();
       },
-      refresh() {
+      refresh(){
         this.scroll && this.scroll.refresh();
       },
-      scrollTo() {
-        this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments);
+      scrollTo(){
+        this.scroll && this.scroll.scrollTo.apply(this.scroll,arguments);
       },
-      scrollToElem() {
-        this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments);
+      scrollToElem(){
+        this.scroll && this.scroll.scrollToElement.apply(this.scroll,arguments);
       },
     },
     mounted() {
       setTimeout(() => {
         this._initScroll();
-      }, 20)
+      },20)
     },
     watch: {
-      data() {
+      data(){
         setTimeout(() => {
           this.refresh();
-        }, 20)
+        },20)
       }
     }
   }
