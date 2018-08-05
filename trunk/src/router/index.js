@@ -10,6 +10,7 @@ import FindAll from 'page/find/FindAll';
 import FindActivity from 'page//find/FindActivity';
 import FindNews from 'page/find/FindNews';
 import FindShop from 'page/find/FindShop';
+import NewsDetail from 'page/find/NewsDetail';
 
 Vue.use(Router);
 
@@ -47,7 +48,11 @@ export default new Router({
       children: [
         {path: 'findAll', component: FindAll},
         {path: 'findActivity', component: FindActivity},
-        {path: 'findNews', component: FindNews},
+        {
+          path: 'findNews', component: FindNews, children: [
+            {path: ':newsCategoryId', component: NewsDetail}
+          ]
+        },
         {path: 'findShop', component: FindShop}
       ]
     }
