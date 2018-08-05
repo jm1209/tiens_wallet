@@ -102,8 +102,7 @@
       },
       getLocation() {
         this.location = '正在获取位置...';
-        this._mapInit(() => {
-        });
+        this._mapInit(() => {});
       },
       _mapInit(callback) {
         var geolocation = new BMap.Geolocation();

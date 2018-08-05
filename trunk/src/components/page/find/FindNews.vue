@@ -2,10 +2,8 @@
   <div class="find-news">
     <div class="news-swiper">
       <div class="swiper-wrapper">
-        <div class="swiper-slide" v-for="column in newsClassify">
-          <router-link tag="span" :to="{path:'/find/findNews/'+column.newsCategoryId}">
-            {{column.newsCategoryName}}
-          </router-link>
+        <div class="swiper-slide" v-for="column in newsClassify" @click="goNewsColumn(column,$event)">
+          <span :class="newsCategoryId == column.newsCategoryId?'active':''">{{column.newsCategoryName}}</span>
         </div>
       </div>
     </div>
@@ -19,6 +17,7 @@
 <script>
   import Swiper from 'swiper';
   import ajax from 'js/ajax';
+  import {mapActions, mapGetters} from 'vuex';
 
   export default {
     name: "FindNews",
@@ -28,8 +27,20 @@
         newsClassify: []
       }
     },
+    computed: {
+      ...mapGetters(['newsCategoryId'])
+    },
     methods: {
+      goNewsColumn(column, e) {
+        this.getNewsCategoryId({
+          newsCategoryId: column.newsCategoryId
+        });
+        this.$router.push({path: '/find/findNews/' + column.newsCategoryId});
+      },
       _findNewsInit() {
+        if (this.newsCategoryId == '') {
+          this.$router.push({path:'/find/findNews/'+'detail'})
+        }
         ajax('get/discovered/getNewsCategories', {}, (d) => {
           this.newsClassify = d.data;
 
@@ -42,8 +53,10 @@
         this.newsSwiper = new Swiper('.news-swiper', {
           slidesPerView: 'auto'
         });
-      }
+      },
+      ...mapActions(['getNewsCategoryId'])
     },
+
     created() {
       this.newsSwiper = null;
       this._findNewsInit();
