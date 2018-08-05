@@ -12,7 +12,7 @@
       </div>
       <div class="info-wrapper">
         <div class="info">
-          <div class="num">99</div>
+          <div class="num" v-show="token">{{mesCount}}</div>
         </div>
       </div>
     </div>
@@ -24,7 +24,7 @@
       <router-link tag="div" to="/find/findActivity" class="tab-item">
         <span class="tab-link">热门活动</span>
       </router-link>
-      <router-link tag="div" to="/find/findNews" class="tab-item">
+      <router-link tag="div" to="/find/findNews/detail" class="tab-item">
         <span class="tab-link">新闻资讯</span>
       </router-link>
       <router-link tag="div" to="/find/findShop" class="tab-item">
@@ -32,11 +32,10 @@
       </router-link>
     </div>
     <!--主体内容-->
-    <transition name="slide">
-      <keep-alive>
-        <router-view></router-view>
-      </keep-alive>
-    </transition>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
+
 
     <tab-bar tabIndex="2"></tab-bar>
   </div>
@@ -44,9 +43,20 @@
 
 <script>
   import tabBar from 'base/tabBar';
+  import {mapGetters} from 'vuex';
+
+  const TOKEN = sessionStorage.getItem('token');
 
   export default {
     name: "Find",
+    data() {
+      return {
+        token: TOKEN
+      }
+    },
+    computed: {
+      ...mapGetters(['mesCount'])
+    },
     components: {tabBar},
   }
 </script>
@@ -135,17 +145,6 @@
           }
         }
       }
-    }
-
-    .slide-enter-active {
-      transition: all 0.3s;
-    }
-
-    .slide-enter, .slide-leave-to {
-      transform: translate3d(100%, 0, 0);
-    }
-    .slide-leave {
-      display: none;
     }
   }
 </style>

@@ -11,9 +11,9 @@
             </span>
           </div>
         </div>
-        <div class="info-wrapper">
+        <div class="info-wrapper" @click="isLogin">
           <div class="info">
-            <div class="num">{{msmCount}}</div>
+            <div class="num" v-show="token">{{msmCount}}</div>
           </div>
         </div>
       </div>
@@ -37,7 +37,6 @@
         </div>
       </div>
     </div>
-
     <!--当向上滚动时头部显示-->
     <div class="up-top" v-if="topShow">
       <div class="item">
@@ -53,18 +52,12 @@
         <i class="recharge-icon"></i>
       </div>
       <div class="seach">搜索</div>
-      <div class="info-wrapper">
+      <div class="info-wrapper" @click="isLogin">>
         <div class="info">
-          <div class="num">{{msmCount}}</div>
+          <div class="num" v-show="token">{{msmCount}}</div>
         </div>
       </div>
     </div>
-    <!--<div class="loading">-->
-    <!--<div class="load-wrapper">-->
-    <!--<img src="../../assets/images/loading.gif" width="50" height="50">-->
-    <!--<p>小狮子正在奋力加载中</p>-->
-    <!--</div>-->
-    <!--</div>-->
     <div class="bg-layer" ref="layer"></div>
     <scroll class="content" v-if="businesses.length" ref="scroll" :listenScroll="listenScroll" @scrollRang="scroll"
             :data="activities"
@@ -124,29 +117,36 @@
         <div class="no-more">没有内容了</div>
       </div>
     </scroll>
-    <tab-bar tabIndex="0"></tab-bar>
     <div class="loading-wrapper" v-if="!businesses.length">
       <v-loading></v-loading>
     </div>
+    <tips-box :tipShow="tipShow" content="你还未登陆" firstBtn="取消" secondBtn="去登陆" @leftBtn="closeTip"
+              @rightBtn="goLogin"></tips-box>
+    <tab-bar tabIndex="0" @isLogin="isLogin"></tab-bar>
   </div>
 </template>
 
 <script>
   import scroll from 'base/scroll';
   import tabBar from 'base/tabBar';
+  import tipsBox from 'base/tipsBox';
   import vLoading from 'common/vLoading';
   import Swiper from 'swiper';
   import ajax from 'js/ajax';
+  import {mapMutations} from 'vuex';
 
   const TOPHEIGHT = 55;
+  const TOKEN = sessionStorage.getItem('token');
 
   export default {
     name: "Index",
     data() {
       return {
         topShow: false,
+        tipShow: false,
         scrollY: 0,
         mesCount: 0,
+        token: TOKEN,
         arrayType: -1,
         activities: [],
         advertisements: [],
@@ -155,7 +155,7 @@
         productArr: []
       }
     },
-    components: {scroll, tabBar, vLoading},
+    components: {scroll, tabBar, vLoading, tipsBox},
     computed: {
       msmCount() {
         return this.mesCount >= 100 ? '..' : this.mesCount
@@ -167,6 +167,15 @@
       },
       loading() {
         this.isLoad = false;
+      },
+      isLogin() {
+        this.tipShow = true;
+      },
+      goLogin() {
+        this.$router.push({path: '/login'});
+      },
+      closeTip() {
+        this.tipShow = false
       },
       _swiperInit() {
         this.bannerSwiper = new Swiper('.banner-swiper', {
@@ -189,15 +198,18 @@
           this.advertisement = d.data.advertisement;
           this.mesCount = d.data.mesCount;
           this.arrayType = d.data.arrayType;
+          this.productArr = d.data.products;
+
+          this.setMesCount(this.mesCount);
 
           this.$nextTick(() => {
             this._swiperInit();
           });
         });
-        ajax('get/index/getProductList', {memId: '', page: 0, pageSize: 10}, (d) => {
-          this.productArr = d.data || [];
-        })
-      }
+      },
+      ...mapMutations({
+        setMesCount: 'SET_MESCOUNT'
+      })
     },
     watch: {
       scrollY(newY) {
@@ -403,7 +415,7 @@
           height: 30px;
           .bg-img(main_not2);
           background-size: 30px 30px;
-          margin: 10px 10px 0 0;
+          margin: 0 5px;
           position: relative;
 
           .num {

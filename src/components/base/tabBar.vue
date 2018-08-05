@@ -10,6 +10,8 @@
 <script>
   import {mapGetters} from 'vuex';
 
+  const TOKEN = sessionStorage.getItem('token');
+
   export default {
     name: "tabBar",
     props: ['tabIndex'],
@@ -32,9 +34,15 @@
       },
       tabLink(index) {
         if (index == 0) {
-          this.$router.push({path:'/index'});
-        } else if ((index == 2)) {
-          this.$router.push({path:'/find/findAll'});
+          this.$router.push({path: '/index'});
+        } else if (index == 2) {
+          this.$router.push({path: '/find/findAll'});
+        } else if (index == 3) {
+          if (TOKEN) {
+            this.$router.push({path: '/vip'});
+          } else {
+            this.$emit('isLogin');
+          }
         }
       }
     }

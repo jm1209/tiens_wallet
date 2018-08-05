@@ -4,9 +4,10 @@ import App from './App';
 import router from './router';
 import Fastclick from 'fastclick';
 import VueI18n from 'vue-i18n';
-import store from './store'
+import store from './store';
+import $ from 'jquery';
 
-Vue.use(VueI18n);
+Vue.use(VueI18n, $);
 
 import 'less/index.less';
 import "swiper/dist/css/swiper.min.css";
@@ -20,4 +21,4 @@ new Vue({
   store,
   components: {App},
   template: '<App/>'
-})
+});

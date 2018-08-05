@@ -3,6 +3,7 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
+const webpack = require("webpack")
 
 function resolve(dir) {
   return path.join(__dirname, '..', dir)
@@ -30,8 +31,16 @@ module.exports = {
       'base': resolve('src/components/base'),
       'less': resolve('src/assets/less'),
       'js': resolve('src/assets/js'),
+      'jquery': 'jquery'
     }
   },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin('common.js'),
+    new webpack.ProvidePlugin({
+      jQuery: "jquery",
+      $: "jquery"
+    })
+  ],
   module: {
     rules: [
       {

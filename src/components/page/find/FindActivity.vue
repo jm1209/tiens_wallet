@@ -12,7 +12,7 @@
         </div>
         <div class="activity-list">
           <div class="list" v-for="act in activityList">
-            <img :src="act.actImageSmall" width="100%">
+            <img :src="act.actImageSmall" width="100%" @load="loadImg">
             <p class="title">{{act.actTitle}}</p>
             <p class="time">{{act.actStartTime}}至{{act.actEndTime}}</p>
           </div>
