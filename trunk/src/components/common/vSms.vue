@@ -9,6 +9,7 @@
 
   export default {
     name: "vSms",
+    props: ['phoneNum'],
     data() {
       return {
         time: 10,
@@ -18,24 +19,28 @@
     },
     computed: {
       smsTxt() {
-        return this.flag ? '获取验证码' : this.time + 's';
+        return this.flag ? '获取验证码' : this.time + 's重发';
       }
     },
     methods: {
       getSms() {
+        if (this.phoneNum == '') {
+          this.$emit('openMsg');
+          return;
+        }
         if (!this.flag) {
           return;
         }
-        ajax('get/common/getCode', {codeType:3,memPhone:'16605625878'});
+        ajax('get/common/getCode', {codeType: 3, memPhone: this.phoneNum});
         this.flag = false;
-        this.time = 10,
-          this.timer = setInterval(() => {
-            this.time--;
-            if (this.time == 0) {
-              this.flag = true;
-              clearInterval(this.timer);
-            }
-          }, 1000);
+        this.time = 60;
+        this.timer = setInterval(() => {
+          this.time--;
+          if (this.time == 0) {
+            this.flag = true;
+            clearInterval(this.timer);
+          }
+        }, 1000);
       }
     },
     watch: {}

@@ -21,7 +21,7 @@ export default function ajax(url, data, callback) {
     if (d.code == '0') {
       callback(d);
     } else if (d.code == '20001') {
-      alert(d.msg)
+      callback(d);
     } else if (d.code == '30002' || d.code == '30001') {
       this.$router.push({path:'/login'});
     }
