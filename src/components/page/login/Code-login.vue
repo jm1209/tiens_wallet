@@ -5,33 +5,79 @@
     <div class="input-wrapper">
       <div class="phone-wrapper">
         <div class="area">+86 <i></i></div>
-        <div class="phone"><input type="number" placeholder="请输入手机号"></div>
+        <div class="phone"><input type="number" placeholder="请输入手机号" v-model="phoneNum"></div>
       </div>
       <div class="sms-wrapper">
-        <div class="sms"><input type="text" placeholder="短信验证码"></div>
+        <div class="sms"><input type="text" placeholder="短信验证码" v-model="codeNum"></div>
         <div class="sms-btn">
-          <v-sms></v-sms>
+          <v-sms :phoneNum="phoneNum" @openMsg="openMsg"></v-sms>
         </div>
       </div>
       <router-link tag="div" to="/phoneLogin" class="other"><span>使用手机账号登录</span></router-link>
     </div>
     <div class="login" @click="login">登陆</div>
+
+    <transition name="upmsg">
+      <v-msg :msg="msg" :msgShow="msgShow"></v-msg>
+    </transition>
+    <v-shadeLoading :isShade="isShade"></v-shadeLoading>
   </div>
 </template>
 
 <script>
   import vTop from 'common/vTop';
   import vSms from 'common/vSms';
+  import vMsg from 'common/vMsg';
+  import vShadeLoading from 'common/vShadeLoading';
+  import ajax from 'js/ajax';
 
   export default {
     name: "Code-login",
-    components: {vTop, vSms},
+    components: {vTop, vSms, vMsg, ajax, vShadeLoading},
+    data() {
+      return {
+        phoneNum: '',
+        codeNum: '',
+        msg: '请输入手机号',
+        msgShow: false,
+        isShade: false
+      }
+    },
     methods: {
       register() {
-        this.$router.push({path:'/register'});
+        this.$router.push({path: '/register'});
       },
-      login(){
-        this.$router.push({path:'/index'});
+      login() {
+        if (this.phoneNum == '') {
+          this.msgShow = true;
+          this.msg = '手机号不能为空';
+          return;
+        }
+        if (this.codeNum == '') {
+          this.msgShow = true;
+          this.msg = '验证码不能为空';
+          return
+        }
+        this.isShade = true;
+        ajax('get/center/validatePhone', {memPhone: this.phoneNum, smsCode: this.codeNum}, (d) => {
+          this.isShade = false;
+          if (d.code == '0') {
+            this.$router.push({path: '/index'});
+          } else {
+            this.msg = d.msg;
+            this.msgShow = true;
+            setTimeout(() => {
+              this.msgShow = false;
+            }, 2000)
+          }
+
+        });
+      },
+      openMsg() {
+        this.msgShow = true;
+        setTimeout(() => {
+          this.msgShow = false;
+        }, 2000)
       }
     }
   }
@@ -121,6 +167,13 @@
       color: #fff;
       border-radius: 2px;
       font-size: @font-theme;
+    }
+
+    .upmsg-enter-active, .upmsg-leave-active {
+      transition: all 0.3s;
+    }
+    .upmsg-enter, .upmsg-leave-to {
+      transform: translateY(0);
     }
   }
 </style>
