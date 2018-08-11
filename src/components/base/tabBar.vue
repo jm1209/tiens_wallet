@@ -39,7 +39,7 @@
           this.$router.push({path: '/find/findAll'});
         } else if (index == 3) {
           if (TOKEN) {
-            this.$router.push({path: '/vip'});
+            this.$router.push({path: '/vip/personal'});
           } else {
             this.$emit('isLogin');
           }

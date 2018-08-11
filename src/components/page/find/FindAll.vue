@@ -120,7 +120,7 @@
         }, {enableHighAccuracy: true})
       },
       _findInit() {
-        ajax('get/discovered/getAll', {memId: '', longitude: this.longitude, latitude: this.latitude}, (d) => {
+        ajax('discovered/getAll', {memId: '', longitude: this.longitude, latitude: this.latitude}, (d) => {
           this.activity = d.data.activity;
           this.activityCategories = d.data.activityCategories;
           this.news = d.data.news;

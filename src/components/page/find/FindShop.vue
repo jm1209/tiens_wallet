@@ -103,7 +103,7 @@
           page: this.page,
           pageSize: PAGESIZE
         };
-        ajax('get/discovered/getShopList', data, (d) => {
+        ajax('discovered/getShopList', data, (d) => {
           if (this.again) {
             this.shopsArr = d.data;
           } else {

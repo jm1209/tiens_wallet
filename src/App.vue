@@ -14,12 +14,14 @@
     name: 'App',
     methods: {
       _tabInit() {
-        ajax('get/center/getConfig', {}, (d) => {
+        ajax('center/getConfig', {}, (d) => {
           this.setTabs(d.data.tabs);
+          this.setAreaCode(d.data.codes);
         })
       },
       ...mapMutations({
-        setTabs: 'SET_TABS'
+        setTabs: 'SET_TABS',
+        setAreaCode: 'SET_AREACODE'
       })
     },
     created() {

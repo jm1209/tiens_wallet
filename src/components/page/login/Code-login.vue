@@ -59,7 +59,7 @@
           return
         }
         this.isShade = true;
-        ajax('get/center/validatePhone', {memPhone: this.phoneNum, smsCode: this.codeNum}, (d) => {
+        ajax('center/validatePhone', {memPhone: this.phoneNum, smsCode: this.codeNum}, (d) => {
           this.isShade = false;
           if (d.code == '0') {
             this.$router.push({path: '/index'});

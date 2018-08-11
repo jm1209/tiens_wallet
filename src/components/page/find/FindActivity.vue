@@ -58,7 +58,7 @@
         this._getActivityList();
       },
       _findActivityInit() {
-        ajax('get/discovered/getActivityCategories', {}, (d) => {
+        ajax('discovered/getActivityCategories', {}, (d) => {
           this.activityCategories = d.data;
 
           this.$nextTick(() => {
@@ -67,7 +67,7 @@
         });
       },
       _getActivityList() {
-        ajax('get/discovered/getActivityList', {memId: '', actCategoryId: '', page: this.page, pageSize: 5}, (d) => {
+        ajax('discovered/getActivityList', {memId: '', actCategoryId: '', page: this.page, pageSize: 5}, (d) => {
           this.activityList = this.activityList.concat(d.data);
           if (d.data.length < 5) {
             this.hasMore = false;

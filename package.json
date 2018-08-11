@@ -16,9 +16,11 @@
     "fastclick": "^1.0.6",
     "jquery": "^3.3.1",
     "js-md5": "^0.7.3",
+    "my-picker": "^0.1.5",
     "swiper": "^4.3.3",
     "vue": "^2.5.2",
     "vue-i18n": "^8.0.0",
+    "vue-ios-pickers": "^1.4.6",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },

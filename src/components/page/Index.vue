@@ -66,7 +66,8 @@
         <!--banner轮播-->
         <div class="banner-swiper" v-if="advertisements.length">
           <div class="swiper-wrapper">
-            <div class="swiper-slide" v-for="ad in advertisements" :data-swiper-autoplay="ad.advTime*1000">
+            <div class="swiper-slide" v-for="ad in advertisements" :data-swiper-autoplay="ad.advTime*1000"
+                 @click="goDetail(ad.advId)">
               <img :src="ad.advImage">
             </div>
           </div>
@@ -165,6 +166,9 @@
       scroll(pos) {
         this.scrollY = pos.y;
       },
+      goDetail(id) {
+        this.$router.push({path: '/detail?id=' + id});
+      },
       loading() {
         this.isLoad = false;
       },
@@ -190,7 +194,7 @@
         });
       },
       _indexInit() {
-        ajax('get/index/getInfo', {memId: ''}, (d) => {
+        ajax('index/getInfo', {memId: ''}, (d) => {
           this.activities = d.data.activities;
           this.advertisements = d.data.advertisements;
           this.businesses = d.data.businesses;
@@ -198,7 +202,7 @@
           this.advertisement = d.data.advertisement;
           this.mesCount = d.data.mesCount;
           this.arrayType = d.data.arrayType;
-          this.productArr = d.data.products;
+          this.productArr = d.data.products || [];
 
           this.setMesCount(this.mesCount);
 

@@ -11,6 +11,8 @@ import FindActivity from 'page//find/FindActivity';
 import FindNews from 'page/find/FindNews';
 import FindShop from 'page/find/FindShop';
 import NewsDetail from 'page/find/NewsDetail';
+import Personal from 'page/vip/Personal';
+import Detail from 'page/details/Detail';
 
 Vue.use(Router);
 
@@ -55,6 +57,14 @@ export default new Router({
         },
         {path: 'findShop', component: FindShop}
       ]
-    }
+    }, {
+      path: '/personal',
+      name: 'Personal',
+      component: Personal
+    },{
+      path: '/detail',
+      name: 'Detail',
+      component: Detail
+    },
   ]
 })

@@ -2,7 +2,7 @@
   <div class="top" :class="background">
     <div class="back" @click.stop="back"></div>
     <div class="text">{{title}}</div>
-    <div class="btn" @click="unknown" v-if="btnName.length > 0">{{btnName}}</div>
+    <div class="btn" @click="unknown" v-if="btnName || btnBg" :class="btnBg">{{btnName}}</div>
   </div>
 </template>
 
@@ -12,7 +12,8 @@
     props: {
       background: {type: String, default: 'white'},
       title: {type: String, default: ''},
-      btnName: {type: String, default: ''}
+      btnName: {type: String, default: ''},
+      btnBg: {type: String, default: ''},
     },
     methods: {
       back() {

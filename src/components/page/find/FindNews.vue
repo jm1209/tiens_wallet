@@ -41,7 +41,7 @@
         if (this.newsCategoryId == '') {
           this.$router.push({path:'/find/findNews/'+'detail'})
         }
-        ajax('get/discovered/getNewsCategories', {}, (d) => {
+        ajax('discovered/getNewsCategories', {}, (d) => {
           this.newsClassify = d.data;
 
           this.$nextTick(() => {
