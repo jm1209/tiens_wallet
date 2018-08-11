@@ -8,35 +8,48 @@
       </div>
       <div class="pwd-wrapper">
         <div class="pwd"><input :type="typeState" placeholder="请输入密码" v-model="pwd"></div>
-        <div class="pwd-btn" @click="checkType"></div>
+        <div class="pwd-btn" :class="btnShow" @click="checkType"></div>
       </div>
       <router-link tag="div" to="/codeLogin" class="other"><span>使用验证码登陆</span></router-link>
     </div>
     <div class="login" @click="login">登陆</div>
+    <transition name="upmsg">
+      <v-msg :msg="msg" :msgShow="msgShow"></v-msg>
+    </transition>
+    <v-ShadeLoading :isShade="isShade"></v-ShadeLoading>
   </div>
 </template>
 
 <script>
   import vTop from 'common/vTop';
+  import vMsg from 'common/vMsg';
+  import vShadeLoading from 'common/vShadeLoading';
+  import ajax from 'js/ajax';
 
   export default {
     name: "Phone-login",
-    components: {vTop},
+    components: {vTop, vMsg, vShadeLoading},
     data() {
       return {
         showPwd: true,
         phone: '',
         pwd: '',
+        msg: '',
+        msgShow: false,
+        isShade: false
       }
     },
     computed: {
       typeState() {
         return this.showPwd ? 'password' : 'text';
+      },
+      btnShow() {
+        return this.showPwd ? 'pwd-hide' : 'pwd-show';
       }
     },
     methods: {
       register() {
-        this.$router.push({path:'/register'});
+        this.$router.push({path: '/register'});
       },
       checkType() {
         if (this.pwd == '') {
@@ -44,8 +57,31 @@
         }
         this.showPwd = !this.showPwd;
       },
-      login(){
-        this.$router.push({path:'/index'});
+      login() {
+        setTimeout(() => {
+          this.msgShow = false;
+        }, 2000);
+        if (this.phone == '') {
+          this.msgShow = true;
+          this.msg = '请输入手机号';
+          return;
+        }
+        if (this.pwd == '') {
+          this.msgShow = true;
+          this.msg = '请输入密码';
+          return;
+        }
+        this.isShade = true;
+        ajax('center/loginByPassword', {memPhone: this.phone, memPassword: this.pwd}, (d) => {
+          this.isShade = false;
+          if (d.code == '0') {
+            this.isShade = false;
+            this.$router.push({path: '/index'});
+          } else if (d.code == '30003') {
+            this.msgShow = true;
+            this.msg = d.msg;
+          }
+        });
       }
     },
     created() {
@@ -115,10 +151,16 @@
           position: absolute;
           right: 5px;
           margin-top: 5px;
-          .bg-img(login_visible);
           background-size: 25px 25px;
           width: 25px;
           height: 25px;
+
+          &.pwd-show {
+            .bg-img(login_visible);
+          }
+          &.pwd-hide {
+            .bg-img(login_invisible);
+          }
         }
       }
       .other {
@@ -143,6 +185,12 @@
       color: #fff;
       border-radius: 2px;
       font-size: @font-theme;
+    }
+    .upmsg-enter-active, .upmsg-leave-active {
+      transition: all 0.3s;
+    }
+    .upmsg-enter, .upmsg-leave-to {
+      transform: translateY(0);
     }
   }
 </style>

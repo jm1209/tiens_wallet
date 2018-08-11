@@ -9,7 +9,10 @@ const mutations = {
   },
   [types.SET_MESCOUNT](state, mesCount) {
     state.mesCount = mesCount;
-  }
+  },
+  [types.SET_AREACODE](state, areaCode) {
+    state.areaCode = areaCode;
+  },
 };
 
 export default mutations;

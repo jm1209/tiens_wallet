@@ -3,3 +3,5 @@ export const SET_TABS = 'SET_TABS';
 export const SET_NEWSCATEGORYID = 'SET_NEWSCATEGORYID';
 
 export const SET_MESCOUNT = 'SET_MESCOUNT';
+
+export const SET_AREACODE = 'SET_AREACODE';

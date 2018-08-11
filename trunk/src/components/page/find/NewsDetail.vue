@@ -19,7 +19,7 @@
       _detailInit() {
         let newsCategoryId = this.newsCategoryId == 'detail' ? '' : this.newsCategoryId;
         let data = {memId: '', newsCategoryId: newsCategoryId, page: this.page, pageSize: PAGESIZE};
-        ajax('get/discovered/getNewsList', data, (d) => {
+        ajax('discovered/getNewsList', data, (d) => {
           this.newsList = d.data;
 
         });

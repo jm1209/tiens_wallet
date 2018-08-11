@@ -31,7 +31,7 @@
         if (!this.flag) {
           return;
         }
-        ajax('get/common/getCode', {codeType: 3, memPhone: this.phoneNum});
+        ajax('common/getCode', {codeType: 3, memPhone: this.phoneNum});
         this.flag = false;
         this.time = 60;
         this.timer = setInterval(() => {
